@@ -56,6 +56,7 @@
         <TextBox Grid.Row="2" x:Name="Login"/>
         <PasswordBox Grid.Row="3" x:Name="Password" />
         <Button Content="Connect" Grid.Row="4"/>
-        <Button Content="Fetch Data" Grid.Row="5"/>
+        <Button Content="Fetch Data" Grid.Row="5" Command="{Binding ConnectToDatabase}"/>
+        <TextBlock Grid.Row="6" Grid.ColumnSpan="2"></TextBlock>
     </Grid>
 </mah:MetroWindow>
