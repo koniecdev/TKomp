@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using Caliburn.Micro;
+using System.Collections.ObjectModel;
 
 namespace TKomp.ViewModels;
 
@@ -18,7 +19,17 @@ public class MainViewModel : INotifyPropertyChanged
 {
 	private readonly DevDataContext _db;
 	public ICommand ConnectToDatabase { get; set; }
-	public BindableCollection<ColumnProperties> Columns { get; set; }
+	private ObservableCollection<ColumnProperties> _Columns;
+
+	public ObservableCollection<ColumnProperties> Columns
+	{
+		get { return _Columns; }
+		set { 
+			_Columns = value;
+			OnPropertyChanged();
+		}
+	}
+
 	public MainViewModel()
 	{
 		_db = new();

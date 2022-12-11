@@ -34,6 +34,8 @@
             <Setter Property="Background" Value="#009FFF"/>
             <Setter Property="Margin" Value="32px 8px 0 8px"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
             
         </Style>
     </mah:MetroWindow.Resources>
@@ -58,5 +60,13 @@
         <Button Content="Connect" Grid.Row="4"/>
         <Button Content="Fetch Data" Grid.Row="5" Command="{Binding ConnectToDatabase}"/>
         <TextBlock Grid.Row="6" Grid.ColumnSpan="2"></TextBlock>
+        <DataGrid Name="DatabaseColumnsDataGrid" ItemsSource="{Binding Columns}" AutoGenerateColumns="False" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="7">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Table Name" Width="200" Binding="{Binding TableName}"/>
+                <DataGridTextColumn Header="Column Name" Width="200" Binding="{Binding ColumnName}"/>
+                <DataGridTextColumn Header="Type" Width="130" Binding="{Binding TypeName}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
     </Grid>
 </mah:MetroWindow>
