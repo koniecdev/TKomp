@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:local="clr-namespace:TKomp" xmlns:viewmodels="clr-namespace:TKomp.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
+        xmlns:local="clr-namespace:TKomp" xmlns:viewmodels="clr-namespace:TKomp.ViewModels" xmlns:components="clr-namespace:TKomp.Components" d:DataContext="{d:DesignInstance Type=viewmodels:MainViewModel}"
         mc:Ignorable="d"
         Title="T Komp" Height="450" Width="800">
     <mah:MetroWindow.Resources>
@@ -54,12 +54,13 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <TextBlock FontSize="10">Login: DefaultUser Password: DefaultPassword123#</TextBlock>
         <TextBlock Grid.Row="1">Connect to database</TextBlock>
-        <TextBox Grid.Row="2" x:Name="Login"/>
-        <PasswordBox Grid.Row="3" x:Name="Password" />
-        <Button Content="Connect" Grid.Row="4"/>
-        <Button Content="Fetch Data" Grid.Row="5" Command="{Binding ConnectToDatabase}"/>
-        <TextBlock Grid.Row="6" Grid.ColumnSpan="2"></TextBlock>
+        <TextBox Grid.Row="2" x:Name="Login" Text="{Binding Username}"/>
+        <components:BindablePasswordBox Grid.Row="3" Password="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+        <Button Content="Connect" Grid.Row="4" Command="{Binding ConnectToDatabase}"/>
+        <Button Content="Fetch Data" Grid.Row="5" Command="{Binding FetchData}"/>
+        <TextBlock Text="{Binding ConnectionStatus}" Grid.Row="6" Grid.ColumnSpan="2"></TextBlock>
         <DataGrid Name="DatabaseColumnsDataGrid" ItemsSource="{Binding Columns}" AutoGenerateColumns="False" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="7">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Table Name" Width="200" Binding="{Binding TableName}"/>

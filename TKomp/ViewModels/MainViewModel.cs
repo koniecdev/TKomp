@@ -18,9 +18,48 @@ namespace TKomp.ViewModels;
 public class MainViewModel : INotifyPropertyChanged
 {
 	private readonly DevDataContext _db;
+	private readonly string DefaultUsername = "DefaultUser";
+	private readonly string DefaultPassword = "DefaultPassword123#";
+	private bool isLoggedIn = false;
 	public ICommand ConnectToDatabase { get; set; }
-	private ObservableCollection<ColumnProperties> _Columns;
+	public ICommand FetchData { get; set; }
 
+	private string _connectionStatus;
+
+	public string ConnectionStatus
+	{
+		get { return _connectionStatus; }
+		set { 
+			_connectionStatus = value; 
+			OnPropertyChanged();
+		}
+	}
+
+
+	private string _username;
+
+	public string Username
+	{
+		get { return _username; }
+		set { 
+			_username = value;
+			OnPropertyChanged();
+		}
+	}
+
+	private string _password;
+
+	public string Password
+	{
+		get { return _password; }
+		set { 
+			_password = value;
+			OnPropertyChanged(nameof(Password));
+		}
+	}
+
+
+	private ObservableCollection<ColumnProperties> _Columns;
 	public ObservableCollection<ColumnProperties> Columns
 	{
 		get { return _Columns; }
@@ -33,11 +72,37 @@ public class MainViewModel : INotifyPropertyChanged
 	public MainViewModel()
 	{
 		_db = new();
-		ConnectToDatabase = new RelayCommand(ConnectToDb);
+		ConnectToDatabase = new RelayCommand(ConnectToDb, CanLogIn);
+		FetchData = new RelayCommand(GetData, CanFetchData);
 		Columns = new();
+		Username = "";
+		Password = "";
+		ConnectionStatus = "";
+	}
+	private bool CanLogIn(object obj)
+	{
+		return !isLoggedIn;
+	}
+	private bool CanFetchData(object obj)
+	{
+		return isLoggedIn;
+	}
+	
+	private void ConnectToDb(object obj)
+	{
+		if (Username == DefaultUsername && Password == DefaultPassword)
+		{
+			isLoggedIn = true;
+			ConnectionStatus = "Connection OK";
+		}
+		else
+		{
+			isLoggedIn = false;
+			ConnectionStatus = "Invalid credentials";
+		}
 	}
 
-	private void ConnectToDb(object obj)
+	private void GetData(object obj)
 	{
 		List<Type> _types = new()
 		{
@@ -47,7 +112,6 @@ public class MainViewModel : INotifyPropertyChanged
 		};
 		List<ColumnProperties> columns = GetIntTypeColumnsFromTable(_types);
 		Columns = new(columns);
-		MessageBox.Show("done");
 	}
 
 	private List<ColumnProperties> GetIntTypeColumnsFromTable(List<Type> types)
