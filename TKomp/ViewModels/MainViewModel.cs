@@ -10,6 +10,7 @@ using TKomp.Models;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
+using Caliburn.Micro;
 
 namespace TKomp.ViewModels;
 
@@ -17,10 +18,12 @@ public class MainViewModel : INotifyPropertyChanged
 {
 	private readonly DevDataContext _db;
 	public ICommand ConnectToDatabase { get; set; }
+	public BindableCollection<ColumnProperties> Columns { get; set; }
 	public MainViewModel()
 	{
 		_db = new();
 		ConnectToDatabase = new RelayCommand(ConnectToDb);
+		Columns = new();
 	}
 
 	private void ConnectToDb(object obj)
@@ -31,14 +34,14 @@ public class MainViewModel : INotifyPropertyChanged
 			typeof(TableB),
 			typeof(TableC)
 		};
-		List<Tuple<string, string, string>> Columns = GetIntTypeColumnsFromTable(_types);
-		
+		List<ColumnProperties> columns = GetIntTypeColumnsFromTable(_types);
+		Columns = new(columns);
 		MessageBox.Show("done");
 	}
 
-	private List<Tuple<string, string, string>> GetIntTypeColumnsFromTable(List<Type> types)
+	private List<ColumnProperties> GetIntTypeColumnsFromTable(List<Type> types)
 	{
-		List<Tuple<string, string, string>> toReturn = new();
+		List<ColumnProperties> toReturn = new();
 		foreach (var type in types)
 		{
 			var table = _db.Model.FindEntityType(type);
@@ -47,7 +50,11 @@ public class MainViewModel : INotifyPropertyChanged
 				var columnType = prop.GetColumnType();
 				if (columnType == "int")
 				{
-					toReturn.Add(new Tuple<string, string, string>(table.GetTableName(), prop.GetColumnName(), columnType));
+					toReturn.Add(new ColumnProperties {
+						TableName = table.GetTableName(),
+						ColumnName = prop.GetColumnName(),
+						TypeName = columnType 
+					});
 				}
 			}
 		}
